@@ -31,12 +31,16 @@ namespace terminal_game.terminal
             
             /* Set up grid */
             Grid = new char[Width, Height];
-            
+            ClearScreen();
+        }
+
+        public void ClearScreen()
+        {
             for (int row = 0; row < Height; row++)
             {
                 for (int col = 0; col < Width; col++)
                 {
-                    Grid[col, row] = (row % 10).ToString()[0];
+                    Grid[col, row] = ' ';
                 }
             }
             
@@ -46,7 +50,7 @@ namespace terminal_game.terminal
         /// <summary>
         /// Update the tmpro to reflect the grid
         /// </summary>
-        void UpdateScreen()
+        public void UpdateScreen()
         {
             string total = "";
             for (int row = 0; row < Height; row++)
