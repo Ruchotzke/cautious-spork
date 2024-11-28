@@ -16,6 +16,7 @@ namespace terminal_game.tasks
         {
             public int Row, Col;
             public char Character;
+            public bool ShiftUp;
         }
         
         public Queue<Command> Commands;
@@ -24,7 +25,7 @@ namespace terminal_game.tasks
         /// <summary>
         /// The extra work done that doesn't lead to a char being printed.
         /// </summary>
-        private float interFrameWork = 0.0f;
+        private float _interFrameWork = 0.0f;
 
         public TerminalPrintTask()
         {
@@ -59,18 +60,40 @@ namespace terminal_game.tasks
         {
             if (Commands.Count > 0)
             {
-                const float speed = 40f;
-                interFrameWork += seconds;
-                int max = Mathf.FloorToInt(interFrameWork * speed); /* N chars per second */
-                interFrameWork -= max * 1.0f / speed;   /* Maintain leftover time for next frame */
+                const float speed = 240f;
+                _interFrameWork += seconds;
+                int max = Mathf.FloorToInt(_interFrameWork * speed); /* N chars per second */
+                _interFrameWork -= max * 1.0f / speed;   /* Maintain leftover time for next frame */
                 int curr = 0;
                 while (Commands.Count > 0 && curr < max)
                 {
                     /* Get current char */
                     Command c = Commands.Dequeue();
+
+                    if (c.ShiftUp)
+                    {
+                        /* Shift up */
+                        for (int row = 0; row < Screen.Height - 1; row++)
+                        {
+                            for (int col = 0; col < Screen.Width; col++)
+                            {
+                                Screen.Grid[col, row] = Screen.Grid[col, row+1];
+                            }
+                        }
+                        
+                        /* Clear bottom row */
+                        for (int col = 0; col < Screen.Width; col++)
+                        {
+                            Screen.Grid[col, Screen.Height - 1] = ' ';
+                        }
+                    }
+                    else
+                    {
+                        /* Print */
+                        Screen.Grid[c.Col, c.Row] = c.Character;
+                    }
                 
-                    /* Print */
-                    Screen.Grid[c.Col, c.Row] = c.Character;
+                    
                 
                     curr += 1;
                 }

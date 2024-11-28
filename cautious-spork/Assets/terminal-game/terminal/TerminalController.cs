@@ -27,6 +27,8 @@ namespace terminal_game.terminal
             {
                 AddChar('o');
             }
+            ShiftUp();
+            ShiftUp();
         }
 
         private void Update()
@@ -80,6 +82,14 @@ namespace terminal_game.terminal
         public void ClearScreen()
         {
             _printTask.Clear();
+        }
+
+        /// <summary>
+        /// Shift all lines upward, removing the top line.
+        /// </summary>
+        public void ShiftUp()
+        {
+            _printTask.PushCommand(new TerminalPrintTask.Command(){ShiftUp = true});
         }
     }
 }
