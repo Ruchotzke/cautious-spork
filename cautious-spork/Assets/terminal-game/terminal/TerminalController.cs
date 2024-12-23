@@ -27,8 +27,6 @@ namespace terminal_game.terminal
             {
                 AddChar('o');
             }
-            ShiftUp();
-            ShiftUp();
         }
 
         private void Update()
