@@ -1,4 +1,5 @@
 ﻿using System;
+using terminal_game.computer;
 using terminal_game.tasks;
 using UnityEngine;
 
@@ -28,6 +29,11 @@ namespace terminal_game.managers
             terminalInputHandler = new TerminalInputHandlerTask();
         }
 
+        private void Start()
+        {
+            Computer.Computers[0].InputHandlerTask = terminalInputHandler;
+        }
+
 
         private void Update()
         {
@@ -36,7 +42,6 @@ namespace terminal_game.managers
             {
                 terminalInputHandler.inputQueue.Enqueue(c);
             }
-            terminalInputHandler.Work(Time.deltaTime);
         }
     }
 }

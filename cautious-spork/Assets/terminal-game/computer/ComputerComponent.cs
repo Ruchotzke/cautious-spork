@@ -1,4 +1,5 @@
 ﻿using System;
+using terminal_game.terminal;
 using UnityEngine;
 
 namespace terminal_game.computer
@@ -14,6 +15,13 @@ namespace terminal_game.computer
         private void Awake()
         {
             _computer = new Computer();
+        }
+
+        private void Start()
+        {
+            /* Connect the terminal component */
+            _computer.PrintTask.Screen = GameObject.FindObjectOfType<TerminalComponent>();
+            _computer.PrintTask.MvAddChar(0, 0, 'a');
         }
 
         private void Update()

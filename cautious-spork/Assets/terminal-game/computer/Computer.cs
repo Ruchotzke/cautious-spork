@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using terminal_game.tasks;
+using terminal_game.terminal;
 
 namespace terminal_game.computer
 {
@@ -10,15 +11,21 @@ namespace terminal_game.computer
     {
         public static List<Computer> Computers = new List<Computer>();
         
-        public TerminalInputHandlerTask InputHandlerTask;
+        /* Print Handlers */
         public TerminalPrintTask PrintTask;
+        
+        public TerminalInputHandlerTask InputHandlerTask;
 
         /// <summary>
         /// Generate a new computer object.
         /// </summary>
         public Computer()
         {
+            /* Save this computer to a master list */
             Computers.Add(this);
+            
+            /* Generate the default tasks */
+            PrintTask = new TerminalPrintTask();
         }
 
         /// <summary>

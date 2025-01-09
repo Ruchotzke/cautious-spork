@@ -21,6 +21,8 @@ namespace terminal_game.tasks
         
         public Queue<Command> Commands;
         public TerminalComponent Screen;
+        
+        private Vector2Int _cursor = Vector2Int.zero;
 
         /// <summary>
         /// The extra work done that doesn't lead to a char being printed.
@@ -106,6 +108,61 @@ namespace terminal_game.tasks
         {
             Commands.Clear();
             Screen.ClearScreen();
+        }
+        
+        /// <summary>
+        /// Step the cursor forward, wrapping when needed.
+        /// </summary>
+        private void StepCursor()
+        {
+            _cursor.x += 1;
+            if (_cursor.x == Screen.Width)
+            {
+                _cursor.x = 0;
+                _cursor.y += 1;
+                if (_cursor.y == Screen.Height)
+                {
+                    _cursor.y = 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Move the cursor and add a char.
+        /// </summary>
+        /// <param name="col"></param>
+        /// <param name="row"></param>
+        /// <param name="ch"></param>
+        public void MvAddChar(int col, int row, char ch)
+        {
+            PushCommand(col % Screen.Width, row % Screen.Height, ch);
+            StepCursor();
+        }
+
+        /// <summary>
+        /// Add a character at the current cursor position.
+        /// </summary>
+        /// <param name="ch"></param>
+        public void AddChar(char ch)
+        {
+            PushCommand(_cursor.x % Screen.Width, _cursor.y % Screen.Height, ch);
+            StepCursor();
+        }
+
+        /// <summary>
+        /// Clear the screen (immediately clears the screen and empties the print queue)
+        /// </summary>
+        public void ClearScreen()
+        {
+            Clear();
+        }
+
+        /// <summary>
+        /// Shift all lines upward, removing the top line.
+        /// </summary>
+        public void ShiftUp()
+        {
+            PushCommand(new TerminalPrintTask.Command(){ShiftUp = true});
         }
     }
 }
