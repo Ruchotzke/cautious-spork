@@ -135,8 +135,28 @@ namespace terminal_game.tasks
         /// <param name="ch"></param>
         public void MvAddChar(int col, int row, char ch)
         {
+            _cursor.x = col;
+            _cursor.y = row;
             PushCommand(col % Screen.Width, row % Screen.Height, ch);
             StepCursor();
+        }
+
+        /// <summary>
+        /// Move the cursor and add a string.
+        /// </summary>
+        /// <param name="col"></param>
+        /// <param name="row"></param>
+        /// <param name="str"></param>
+        public void MvAddStr(int col, int row, string str)
+        {
+            /* First add the first char */
+            MvAddChar(col, row, str[0]);
+            
+            /* And then the rest */
+            foreach (var c in str.Substring(1))
+            {
+                AddChar(c);
+            }
         }
 
         /// <summary>

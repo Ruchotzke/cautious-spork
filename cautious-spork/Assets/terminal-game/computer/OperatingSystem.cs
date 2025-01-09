@@ -32,8 +32,6 @@ namespace terminal_game.computer
             /* Bind the default tasks to their components */
             TerminalPrintTask.Screen = GameObject.FindObjectOfType<TerminalComponent>();
             InputManager.Instance.CharInputHandlers += (input => { InputTask.inputQueue.Enqueue(input); });
-            
-            TerminalPrintTask.MvAddChar(5,5,'a');
         }
 
         /// <summary>
