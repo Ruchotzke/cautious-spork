@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using terminal_game.computer;
 using terminal_game.tasks;
 using UnityEngine;
@@ -14,8 +15,17 @@ namespace terminal_game.managers
         /// The singleton instance of the input manageer.
         /// </summary>
         public static InputManager Instance = null;
+        
+        /* Delegates */
+        /// <summary>
+        /// A delegate for handling character inputs.
+        /// </summary>
+        public delegate void HandleCharInput(char input);
 
-        TerminalInputHandlerTask terminalInputHandler;
+        /// <summary>
+        /// All char input handlers that need to receive char input from this input manager.
+        /// </summary>
+        public HandleCharInput CharInputHandlers;
         
         private void Awake()
         {
@@ -25,22 +35,18 @@ namespace terminal_game.managers
                 Destroy(gameObject);
             }
             Instance = this;
-
-            terminalInputHandler = new TerminalInputHandlerTask();
-        }
-
-        private void Start()
-        {
-            Computer.Computers[0].InputHandlerTask = terminalInputHandler;
         }
 
 
         private void Update()
         {
             /* Get the chars typed */
-            foreach (char c in Input.inputString)
+            if (CharInputHandlers != null)
             {
-                terminalInputHandler.inputQueue.Enqueue(c);
+                foreach (char c in Input.inputString)
+                {
+                    CharInputHandlers(c);
+                }
             }
         }
     }

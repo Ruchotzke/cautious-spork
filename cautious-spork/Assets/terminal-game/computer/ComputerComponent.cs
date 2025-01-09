@@ -20,8 +20,7 @@ namespace terminal_game.computer
         private void Start()
         {
             /* Connect the terminal component */
-            _computer.PrintTask.Screen = GameObject.FindObjectOfType<TerminalComponent>();
-            _computer.PrintTask.MvAddChar(0, 0, 'a');
+            _computer.OS.Initialize();
         }
 
         private void Update()

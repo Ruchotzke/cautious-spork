@@ -10,11 +10,8 @@ namespace terminal_game.computer
     public class Computer
     {
         public static List<Computer> Computers = new List<Computer>();
-        
-        /* Print Handlers */
-        public TerminalPrintTask PrintTask;
-        
-        public TerminalInputHandlerTask InputHandlerTask;
+
+        public OperatingSystem OS;
 
         /// <summary>
         /// Generate a new computer object.
@@ -24,8 +21,8 @@ namespace terminal_game.computer
             /* Save this computer to a master list */
             Computers.Add(this);
             
-            /* Generate the default tasks */
-            PrintTask = new TerminalPrintTask();
+            /* Generate an OS */
+            OS = new OperatingSystem();
         }
 
         /// <summary>
@@ -34,8 +31,7 @@ namespace terminal_game.computer
         /// <param name="delta"></param>
         public void Tick(float delta)
         {
-            InputHandlerTask?.Work(delta);
-            PrintTask?.Work(delta);
+            OS.Tick(delta);
         }
         
     }
