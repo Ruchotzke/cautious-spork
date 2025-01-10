@@ -26,8 +26,19 @@ namespace terminal_game.tasks
         /// The character grid of the screen.
         /// </summary>
         public char[,] Grid;
+
+        /// <summary>
+        /// The overlay grid on top of the screen.
+        /// </summary>
+        public char[,] OverlayGrid;
         
         private Vector2Int _cursor = Vector2Int.zero;
+
+        public float CursorOnTime = 0.5f;
+        public float CursorOffTime = 0.5f;
+        private bool _isCursorOn = false;
+        private float _cursorTimer = 0.0f;
+        private Vector2Int _prevCursor;
 
         /// <summary>
         /// The extra work done that doesn't lead to a char being printed.
@@ -39,6 +50,7 @@ namespace terminal_game.tasks
             Commands = new Queue<Command>();
 
             Grid = new char[screen.Width, screen.Height];
+            OverlayGrid = new char[screen.Width, screen.Height];
             Screen = screen;
             
             Clear();
@@ -70,6 +82,8 @@ namespace terminal_game.tasks
         /// <param name="seconds"></param>
         public void Work(float seconds)
         {
+            /* Handle commands */
+            bool updated = false;
             if (Commands.Count > 0)
             {
                 const float speed = 240f;
@@ -104,10 +118,37 @@ namespace terminal_game.tasks
                         /* Print */
                         Grid[c.Col, c.Row] = c.Character;
                     }
-                    
+
+                    updated = true;
                     curr += 1;
                 }
-                Screen.UpdateScreen(Grid);
+                Screen.UpdateScreen(Grid, OverlayGrid);
+            }
+            
+            /* If we made any changes, we should force the cursor on */
+            if (updated)
+            {
+                _cursorTimer = 0.0f;
+                _isCursorOn = false;
+                OverlayGrid[_prevCursor.x, _prevCursor.y] = '\0';
+            }
+            
+            /* Update the cursor */
+            _cursorTimer -= seconds;
+            if (_cursorTimer <= 0.0f)
+            {
+                _isCursorOn = !_isCursorOn;
+                _cursorTimer = _isCursorOn ? CursorOnTime : CursorOffTime;
+                if (_isCursorOn)
+                {
+                    _prevCursor = _cursor;
+                    OverlayGrid[_prevCursor.x, _prevCursor.y] = '\u2588';
+                }
+                else
+                {
+                    OverlayGrid[_prevCursor.x, _prevCursor.y] = '\0';
+                }
+                Screen.UpdateScreen(Grid, OverlayGrid);
             }
             
         }
@@ -120,9 +161,10 @@ namespace terminal_game.tasks
                 for (int col = 0; col < Screen.Width; col++)
                 {
                     Grid[col, row] = ' ';
+                    OverlayGrid[col, row] = '\0';
                 }
             }
-            Screen.UpdateScreen(Grid);
+            Screen.UpdateScreen(Grid, OverlayGrid);
         }
         
         

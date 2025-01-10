@@ -31,7 +31,7 @@ namespace terminal_game.terminal
         /// <summary>
         /// Update the tmpro to reflect the grid
         /// </summary>
-        public void UpdateScreen(char[,] grid)
+        public void UpdateScreen(char[,] baseGrid, char[,] overlayGrid)
         {
             string total = "";
             for (int row = 0; row < Height; row++)
@@ -39,7 +39,15 @@ namespace terminal_game.terminal
                 string line = "";
                 for (int col = 0; col < Width; col++)
                 {
-                    line += grid[col, row];
+                    if (overlayGrid[col, row] != (char)0)
+                    {
+                        line += overlayGrid[col, row];
+                    }
+                    else
+                    {
+                        line += baseGrid[col, row];
+                    }
+                    
                 }
 
                 total += line + "<br>";
