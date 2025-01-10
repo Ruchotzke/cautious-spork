@@ -62,7 +62,7 @@ namespace terminal_game.tasks
         {
             if (Commands.Count > 0)
             {
-                const float speed = 240f;
+                const float speed = 10f;//240f;
                 _interFrameWork += seconds;
                 int max = Mathf.FloorToInt(_interFrameWork * speed); /* N chars per second */
                 _interFrameWork -= max * 1.0f / speed;   /* Maintain leftover time for next frame */

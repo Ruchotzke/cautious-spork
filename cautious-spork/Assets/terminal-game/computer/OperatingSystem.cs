@@ -13,6 +13,7 @@ namespace terminal_game.computer
         /* Tasks */
         /* Terminal */
         public TerminalPrintTask TerminalPrintTask;
+        public LinePrinter LinePrinter;
         
         /* Input */
         public TerminalInputHandlerTask InputTask;
@@ -32,6 +33,10 @@ namespace terminal_game.computer
             /* Bind the default tasks to their components */
             TerminalPrintTask.Screen = GameObject.FindObjectOfType<TerminalComponent>();
             InputManager.Instance.CharInputHandlers += (input => { InputTask.inputQueue.Enqueue(input); });
+            
+            /* Create a screen handler */
+            LinePrinter = new LinePrinter(TerminalPrintTask.Screen.Width, TerminalPrintTask.Screen.Height,
+                TerminalPrintTask);
         }
 
         /// <summary>
