@@ -21,8 +21,7 @@ namespace terminal_game.computer
         public OperatingSystem()
         {
             /* Generate the default tasks */
-            TerminalPrintTask = new TerminalPrintTask();
-            InputTask = new TerminalInputHandlerTask();
+            InputTask = new TerminalInputHandlerTask(this);
         }
 
         /// <summary>
@@ -31,12 +30,14 @@ namespace terminal_game.computer
         public void Initialize()
         {
             /* Bind the default tasks to their components */
-            TerminalPrintTask.Screen = GameObject.FindObjectOfType<TerminalComponent>();
+            TerminalPrintTask = new TerminalPrintTask(GameObject.FindObjectOfType<TerminalComponent>());
             InputManager.Instance.CharInputHandlers += (input => { InputTask.inputQueue.Enqueue(input); });
             
             /* Create a screen handler */
             LinePrinter = new LinePrinter(TerminalPrintTask.Screen.Width, TerminalPrintTask.Screen.Height,
                 TerminalPrintTask);
+            
+            LinePrinter.Append("Hello World!");
         }
 
         /// <summary>
@@ -47,6 +48,15 @@ namespace terminal_game.computer
         {
             TerminalPrintTask.Work(seconds);
             InputTask.Work(seconds);
+        }
+
+        /// <summary>
+        /// Push keyboard input to the OS.
+        /// </summary>
+        /// <param name="c"></param>
+        public void PushInput(char c)
+        {
+            LinePrinter.Append("" + c);
         }
     }
 }

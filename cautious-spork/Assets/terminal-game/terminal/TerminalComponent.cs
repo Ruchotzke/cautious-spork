@@ -18,8 +18,6 @@ namespace terminal_game.terminal
         /// The screen height in chars.
         /// </summary>
         public int Height = 24;
-
-        public char[,] Grid;
         
         
         private TextMeshProUGUI textMesh;
@@ -28,29 +26,12 @@ namespace terminal_game.terminal
         {
             /* Get Components */
             textMesh = GetComponent<TextMeshProUGUI>();
-            
-            /* Set up grid */
-            Grid = new char[Width, Height];
-            ClearScreen();
-        }
-
-        public void ClearScreen()
-        {
-            for (int row = 0; row < Height; row++)
-            {
-                for (int col = 0; col < Width; col++)
-                {
-                    Grid[col, row] = ' ';
-                }
-            }
-            
-            UpdateScreen();
         }
 
         /// <summary>
         /// Update the tmpro to reflect the grid
         /// </summary>
-        public void UpdateScreen()
+        public void UpdateScreen(char[,] grid)
         {
             string total = "";
             for (int row = 0; row < Height; row++)
@@ -58,7 +39,7 @@ namespace terminal_game.terminal
                 string line = "";
                 for (int col = 0; col < Width; col++)
                 {
-                    line += Grid[col, row];
+                    line += grid[col, row];
                 }
 
                 total += line + "<br>";

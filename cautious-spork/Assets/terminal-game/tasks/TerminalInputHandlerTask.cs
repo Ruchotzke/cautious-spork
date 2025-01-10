@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using terminal_game.computer;
 using UnityEngine;
 
 namespace terminal_game.tasks
@@ -10,10 +11,12 @@ namespace terminal_game.tasks
     public class TerminalInputHandlerTask
     {
         public Queue<char> inputQueue;
+        private OperatingSystem _os;
 
-        public TerminalInputHandlerTask()
+        public TerminalInputHandlerTask(OperatingSystem hook)
         {
             inputQueue = new Queue<char>();
+            _os = hook;
         }
         
         public void Work(float seconds)
@@ -21,19 +24,12 @@ namespace terminal_game.tasks
             while (inputQueue.Count > 0)
             {
                 char next = inputQueue.Dequeue();
-                if (next == '\n' || next == '\r')
-                {
-                    Debug.Log("return");
-                }
-                else if (next == '\b')
-                {
-                    Debug.Log("backspace");
-                }
-                else
-                {
-                    Debug.Log(next);
-                }
                 
+                /* Unity considers \r a newline, so convvert those to linefeeds, as there's not a return key */
+                if (next == '\r') next = '\n';
+                
+                _os.PushInput(next);
+
             }
         }
     }

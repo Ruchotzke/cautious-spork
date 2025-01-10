@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using terminal_game.tasks;
+using UnityEngine;
 
 namespace terminal_game.terminal
 {
@@ -38,7 +39,7 @@ namespace terminal_game.terminal
         /// <summary>
         /// The position of the cursor on the current line.
         /// </summary>
-        private int _currPos;
+        private int CurrPos;
         
         /// <summary>
         /// Construct a new lineprinter.
@@ -53,7 +54,7 @@ namespace terminal_game.terminal
             _p = printer;
             _lines = new List<string>();
             _currLine = "";
-            _currPos = 0;
+            CurrPos = 0;
         }
 
         /// <summary>
@@ -76,9 +77,9 @@ namespace terminal_game.terminal
                         break;
                     case '\b':
                         /* Handle a backspace */
-                        if (_currPos == 0) break;
+                        if (CurrPos == 0) break;
                         
-                        if (_currPos == _currLine.Length)
+                        if (CurrPos == _currLine.Length)
                         {
                             /* Just remove the last */
                             _currLine = _currLine.Substring(0, _currLine.Length - 1);
@@ -86,11 +87,11 @@ namespace terminal_game.terminal
                         else
                         {
                             /* Merge two substrings */
-                            _currLine = _currLine.Substring(0, _currPos - 1) + _currLine.Substring(_currPos);
+                            _currLine = _currLine.Substring(0, CurrPos - 1) + _currLine.Substring(CurrPos);
                         }
 
-                        _currPos -= 1;
-                        _p.MvAddStr(_currPos, _numLines-1, " " + _currLine.Substring(_currPos));
+                        CurrPos -= 1;
+                        _p.MvAddStr(CurrPos, _numLines-1, " " + _currLine.Substring(CurrPos));
                         break;
                         
                     default:
@@ -98,14 +99,14 @@ namespace terminal_game.terminal
                         {
                             /* Use a stringbuilder to edit a specific index */
                             StringBuilder sb = new StringBuilder(_currLine);
-                            if (_currPos != _currLine.Length)
+                            if (CurrPos != _currLine.Length)
                             {
-                                sb[_currPos++] = c;
+                                sb[CurrPos++] = c;
                             }
                             else
                             {
                                 sb.Append(c);
-                                _currPos++;
+                                CurrPos++;
                             }
 
                             _currLine = sb.ToString();
@@ -114,10 +115,10 @@ namespace terminal_game.terminal
                         {
                             /* Basic initial char */
                             _currLine = "" + c;
-                            _currPos++;
+                            CurrPos++;
                         }
                         
-                        _p.MvAddChar(_currPos - 1, _numLines-1, c);
+                        _p.MvAddChar(CurrPos - 1, _numLines-1, c);
                         break;
                 }
             }
@@ -128,7 +129,7 @@ namespace terminal_game.terminal
         /// </summary>
         private void CarriageReturn()
         {
-            _currPos = 0;
+            CurrPos = 0;
         }
 
         /// <summary>
@@ -139,10 +140,10 @@ namespace terminal_game.terminal
             /* Append this line to the feed (up to this char) */
             if (_currLine.Length > 0)
             {
-                _lines.Add(_currLine.Substring(0, _currPos));
+                _lines.Add(_currLine.Substring(0, CurrPos));
             
                 /* Generate a fresh line (or continue the previous) */
-                _currLine = _currPos != _currLine.Length ? _currLine.Substring(_currPos) : "";
+                _currLine = CurrPos != _currLine.Length ? _currLine.Substring(CurrPos) : "";
             }
             else
             {
@@ -151,7 +152,7 @@ namespace terminal_game.terminal
             }
             
             /* Reset the cursor */
-            _currPos = 0;
+            CurrPos = 0;
             
             /* Feed upwards */
             _p.ShiftUp();

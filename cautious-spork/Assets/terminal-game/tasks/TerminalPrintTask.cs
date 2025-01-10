@@ -22,6 +22,11 @@ namespace terminal_game.tasks
         public Queue<Command> Commands;
         public TerminalComponent Screen;
         
+        /// <summary>
+        /// The character grid of the screen.
+        /// </summary>
+        public char[,] Grid;
+        
         private Vector2Int _cursor = Vector2Int.zero;
 
         /// <summary>
@@ -29,9 +34,14 @@ namespace terminal_game.tasks
         /// </summary>
         private float _interFrameWork = 0.0f;
 
-        public TerminalPrintTask()
+        public TerminalPrintTask(TerminalComponent screen)
         {
             Commands = new Queue<Command>();
+
+            Grid = new char[screen.Width, screen.Height];
+            Screen = screen;
+            
+            Clear();
         }
 
         /// <summary>
@@ -62,14 +72,14 @@ namespace terminal_game.tasks
         {
             if (Commands.Count > 0)
             {
-                const float speed = 10f;//240f;
+                const float speed = 240f;
                 _interFrameWork += seconds;
                 int max = Mathf.FloorToInt(_interFrameWork * speed); /* N chars per second */
                 _interFrameWork -= max * 1.0f / speed;   /* Maintain leftover time for next frame */
                 int curr = 0;
                 while (Commands.Count > 0 && curr < max)
                 {
-                    /* Get current char */
+                    /* Get current command */
                     Command c = Commands.Dequeue();
 
                     if (c.ShiftUp)
@@ -79,27 +89,25 @@ namespace terminal_game.tasks
                         {
                             for (int col = 0; col < Screen.Width; col++)
                             {
-                                Screen.Grid[col, row] = Screen.Grid[col, row+1];
+                                Grid[col, row] = Grid[col, row+1];
                             }
                         }
                         
                         /* Clear bottom row */
                         for (int col = 0; col < Screen.Width; col++)
                         {
-                            Screen.Grid[col, Screen.Height - 1] = ' ';
+                            Grid[col, Screen.Height - 1] = ' ';
                         }
                     }
                     else
                     {
                         /* Print */
-                        Screen.Grid[c.Col, c.Row] = c.Character;
+                        Grid[c.Col, c.Row] = c.Character;
                     }
-                
                     
-                
                     curr += 1;
                 }
-                Screen.UpdateScreen();
+                Screen.UpdateScreen(Grid);
             }
             
         }
@@ -107,8 +115,17 @@ namespace terminal_game.tasks
         public void Clear()
         {
             Commands.Clear();
-            Screen.ClearScreen();
+            for (int row = 0; row < Screen.Height; row++)
+            {
+                for (int col = 0; col < Screen.Width; col++)
+                {
+                    Grid[col, row] = ' ';
+                }
+            }
+            Screen.UpdateScreen(Grid);
         }
+        
+        
         
         /// <summary>
         /// Step the cursor forward, wrapping when needed.
@@ -167,14 +184,6 @@ namespace terminal_game.tasks
         {
             PushCommand(_cursor.x % Screen.Width, _cursor.y % Screen.Height, ch);
             StepCursor();
-        }
-
-        /// <summary>
-        /// Clear the screen (immediately clears the screen and empties the print queue)
-        /// </summary>
-        public void ClearScreen()
-        {
-            Clear();
         }
 
         /// <summary>
