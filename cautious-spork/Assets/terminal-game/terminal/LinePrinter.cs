@@ -92,6 +92,7 @@ namespace terminal_game.terminal
 
                         CurrPos -= 1;
                         _p.MvAddStr(CurrPos, _numLines-1, " " + _currLine.Substring(CurrPos));
+                        _p.Mv(CurrPos, _numLines-1);
                         break;
                         
                     default:
@@ -156,6 +157,9 @@ namespace terminal_game.terminal
             
             /* Feed upwards */
             _p.ShiftUp();
+            
+            /* Reset the cursor */
+            _p.Mv(CurrPos, _numLines-1);
         }
     }
 }

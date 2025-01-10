@@ -150,7 +150,6 @@ namespace terminal_game.tasks
                 }
                 Screen.UpdateScreen(Grid, OverlayGrid);
             }
-            
         }
 
         public void Clear()
@@ -198,6 +197,17 @@ namespace terminal_game.tasks
             _cursor.y = row;
             PushCommand(col % Screen.Width, row % Screen.Height, ch);
             StepCursor();
+        }
+
+        /// <summary>
+        /// Move the cursor to the given position.
+        /// </summary>
+        /// <param name="col"></param>
+        /// <param name="row"></param>
+        public void Mv(int col, int row)
+        {
+            _cursor.x = col;
+            _cursor.y = row;
         }
 
         /// <summary>
